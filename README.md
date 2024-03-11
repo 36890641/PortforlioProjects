@@ -113,7 +113,8 @@ SQL Advanced: Supply Chain Analytics
 ### Module: Database Triggers
 
 -- create the trigger to automatically insert record in fact_act_est table whenever insertion happens in fact_sales_monthly 
-	CREATE DEFINER=CURRENT_USER TRIGGER `fact_sales_monthly_AFTER_INSERT` AFTER INSERT ON `fact_sales_monthly` FOR EACH ROW 
+
+CREATE DEFINER=CURRENT_USER TRIGGER `fact_sales_monthly_AFTER_INSERT` AFTER INSERT ON `fact_sales_monthly` FOR EACH ROW 
 	BEGIN
         	insert into fact_act_est 
                         (date, product_code, customer_code, sold_quantity)
@@ -128,7 +129,9 @@ SQL Advanced: Supply Chain Analytics
 	END
 
 -- create the trigger to automatically insert record in fact_act_est table whenever insertion happens in fact_forecast_monthly 
-	CREATE DEFINER=CURRENT_USER TRIGGER `fact_forecast_monthly_AFTER_INSERT` AFTER INSERT ON `fact_forecast_monthly` FOR EACH ROW 
+
+
+CREATE DEFINER=CURRENT_USER TRIGGER `fact_forecast_monthly_AFTER_INSERT` AFTER INSERT ON `fact_forecast_monthly` FOR EACH ROW 
 	BEGIN
         	insert into fact_act_est 
                         (date, product_code, customer_code, forecast_quantity)
@@ -143,7 +146,8 @@ SQL Advanced: Supply Chain Analytics
 	END
 
 -- To see all the Triggers
-        show triggers;
+        
+show triggers;
 
 -- Insert the records in the fact_sales_monthly and fact_forecast_monthly tables and check whether records inserted in fact_act_est table
 	insert into fact_sales_monthly
