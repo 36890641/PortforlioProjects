@@ -50,7 +50,7 @@ Throughout the course of this project, I acquired valuable skills and knowledge 
 <img width="770" alt="Screenshot 2024-02-22 150559" src="https://github.com/36890641/PortforlioProjects/assets/155189186/098cd8e7-5a2c-4d2e-8d48-25f96d22f971">
 
 
-# [Project 5: Sales Analytics_Excel] (sales_market_report_Excel Project.xlsx)
+# [Project 5: Sales Analytics_Excel] 
 
 In this Project, I constructed a comprehensive sales report using Excel pivot tables. This tool equips businesses to discern effective customer discounts, streamline negotiations, and pinpoint potential expansion opportunities in promising markets. The resulting reports offer actionable insights and recommendations, guiding businesses in optimizing sales strategies, elevating customer satisfaction, and maximizing revenue.
 
