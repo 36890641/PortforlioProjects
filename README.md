@@ -112,7 +112,7 @@ SQL Advanced: Supply Chain Analytics
 
 ### Module: Database Triggers
 
--- create the trigger to automatically insert record in fact_act_est table whenever insertion happens in fact_sales_monthly;
+-- create the trigger to automatically insert record in fact_act_est table whenever insertion happens in fact_sales_monthly--
 
 CREATE DEFINER=CURRENT_USER TRIGGER `fact_sales_monthly_AFTER_INSERT` AFTER INSERT ON `fact_sales_monthly` FOR EACH ROW 
 	BEGIN
@@ -128,7 +128,7 @@ CREATE DEFINER=CURRENT_USER TRIGGER `fact_sales_monthly_AFTER_INSERT` AFTER INSE
                          sold_quantity = values(sold_quantity);
 	END
 
--- create the trigger to automatically insert record in fact_act_est table whenever insertion happens in fact_forecast_monthly 
+-- create the trigger to automatically insert record in fact_act_est table whenever insertion happens in fact_forecast_monthly-- 
 
 
 CREATE DEFINER=CURRENT_USER TRIGGER `fact_forecast_monthly_AFTER_INSERT` AFTER INSERT ON `fact_forecast_monthly` FOR EACH ROW 
@@ -145,11 +145,12 @@ CREATE DEFINER=CURRENT_USER TRIGGER `fact_forecast_monthly_AFTER_INSERT` AFTER I
                          forecast_quantity = values(forecast_quantity);
 	END
 
--- To see all the Triggers
+-- To see all the Triggers--
         
 show triggers;
 
--- Insert the records in the fact_sales_monthly and fact_forecast_monthly tables and check whether records inserted in fact_act_est table
+-- Insert the records in the fact_sales_monthly and fact_forecast_monthly tables and check whether records inserted in fact_act_est table--
+
 	insert into fact_sales_monthly
               (date, product_code, customer_code, sold_quantity)
 	values 
@@ -164,13 +165,16 @@ show triggers;
 
 ### Module: Database Events
 
--- To show all the events
+-- To show all the events--
+
 	show events;
 
--- Show variable which have event in it
+-- Show variable which have event in it--
+
 	show variables like "%event%";
 
--- Creating the table "session_logs" in the random table and also insert the records in it
+-- Creating the table "session_logs" in the random table and also insert the records in it--
+
 	CREATE TABLE random_tables.session_logs (`ts` DATETIME, `session_id` INT, `user_id` INT, `log` TEXT);
 	INSERT INTO `random_tables`.`session_logs` 
                 (`ts`, `session_id`, `user_id`, `log`) 
@@ -181,7 +185,8 @@ show triggers;
         	('2022-10-22 14:09:22', '188567', '707', 'NEW LOGIN | New login, user name: tasty@jalebi.com'),
         	('2022-10-22 18:10:06', '188567', '707', 'COURSE PURCHASED | Data analytics in power bi, user name: tasty@jalebi.com');
 
--- Delete logs that are less than 5 days old
+-- Delete logs that are less than 5 days old--
+
 	delimiter |
 	CREATE EVENT e_daily_log_purge
     	ON SCHEDULE
@@ -194,12 +199,14 @@ show triggers;
       	     END |
         delimiter ;
 
--- drop the event
+-- drop the event--
+
        drop event if exists e_daily_log_purge;
 
 ### Module: Temporary Tables & Forecast Accuracy Report
 
--- Forecast accuracy report using cte (It exists at the scope of statements)
+-- Forecast accuracy report using cte (It exists at the scope of statements)--
+
 	with forecast_err_table as (
              select
                   s.customer_code as customer_code,
@@ -223,7 +230,8 @@ show triggers;
 	from forecast_err_table
         order by forecast_accuracy desc;
 
--- Write a stored proc for the same
+-- Write a stored proc for the same--
+
 	CREATE PROCEDURE `get_forecast_accuracy`(
         	in_fiscal_year INT
 	)
@@ -252,7 +260,8 @@ show triggers;
                 order by forecast_accuracy desc;
 	END
 
--- Forecast accuracy report using temporary table (It exists for the entire session)
+-- Forecast accuracy report using temporary table (It exists for the entire session)--
+
 	drop table if exists forecast_err_table;
 	create temporary table forecast_err_table
              select
@@ -279,40 +288,48 @@ show triggers;
 	
 ### Module: User Accounts and Privileges
 
--- Show all grants available for a particular user(wanda)
+-- Show all grants available for a particular user(wanda)--
+
 	show grants for 'wanda';
 
--- Create a new user 'thor' 
+-- Create a new user 'thor' --
+
 	create user 'thor'@'localhost' identified by 'thor';
 
--- Allow certain access to 'thor' user for the database 'gdb041'
+-- Allow certain access to 'thor' user for the database 'gdb041'--
+
      	grant select on gdb041.dim_customer to 'thor'@'localhost';
      	grant select on gdb041.dim_product to 'thor'@'localhost';
      	grant execute on procedure gdb041.get_forecast_accuracy_report to 'thor'@'localhost';
 
--- See all the access for 'thor' user
+-- See all the access for 'thor' user--
+
 	show grants for 'thor'@'localhost';
 
 ### Module: Database Indexes: Index Types (make sakila database as default one)
 	
--- Query1
+-- Query1--
+
 	select * from film where description like "%car%" or "%boat%";
 
--- Query2
+-- Query2--
+
 	select * from sakila.film 
 	where match(description) against("car boat")
-	limit 1000
+	limit 1000;
 
--- Query3
+-- Query3--
+
 	select * from sakila.film 
 	where match(description) against("car -boat" in boolean mode)
 	limit 1000
 
-Chapter:- SQL Advanced: Top Customers, Products, Markets
+# Chapter:- SQL Advanced: Top Customers, Products, Markets
 
 ### Module: Problem Statement and Pre-Invoice Discount Report
 
--- Include pre-invoice deductions in Croma detailed report
+-- Include pre-invoice deductions in Croma detailed report--
+
 	SELECT 
     	   s.date, 
            s.product_code, 
@@ -336,7 +353,8 @@ Chapter:- SQL Advanced: Top Customers, Products, Markets
     	    get_fiscal_year(s.date)=2021     
 	LIMIT 1000000;
 
--- Same report but all the customers
+-- Same report but all the customers--
+
 	SELECT 
     	   s.date, 
            s.product_code, 
@@ -361,7 +379,8 @@ Chapter:- SQL Advanced: Top Customers, Products, Markets
 
 ### Module: Performance Improvement # 1
 
--- creating dim_date and joining with this table and avoid using the function 'get_fiscal_year()' to reduce the amount of time taking to run the query
+-- creating dim_date and joining with this table and avoid using the function 'get_fiscal_year()' to reduce the amount of time taking to run the query--
+
 	SELECT 
     	    s.date, 
             s.customer_code,
@@ -388,7 +407,8 @@ Chapter:- SQL Advanced: Top Customers, Products, Markets
 
 ### Module: Performance Improvement # 2
 
--- Added the fiscal year in the fact_sales_monthly table itself
+-- Added the fiscal year in the fact_sales_monthly table itself--
+
 	SELECT 
     	    s.date, 
             s.customer_code,
@@ -413,7 +433,8 @@ Chapter:- SQL Advanced: Top Customers, Products, Markets
 
 ### Module: Database Views: Introduction
 
--- Get the net_invoice_sales amount using the CTE's
+-- Get the net_invoice_sales amount using the CTE's--
+
 	WITH cte1 AS (
 		SELECT 
     		    s.date, 
@@ -442,7 +463,8 @@ Chapter:- SQL Advanced: Top Customers, Products, Markets
 	LIMIT 1500000;
 
 
--- Creating the view `sales_preinv_discount` and store all the data in like a virtual table
+-- Creating the view `sales_preinv_discount` and store all the data in like a virtual table--
+
 	CREATE  VIEW `sales_preinv_discount` AS
 	SELECT 
     	    s.date, 
@@ -468,15 +490,17 @@ Chapter:- SQL Advanced: Top Customers, Products, Markets
         	ON pre.customer_code = s.customer_code AND
     		pre.fiscal_year=s.fiscal_year
 
--- Now generate net_invoice_sales using the above created view "sales_preinv_discount"
+-- Now generate net_invoice_sales using the above created view "sales_preinv_discount"--
+
 	SELECT 
             *,
     	    (gross_price_total-pre_invoice_discount_pct*gross_price_total) as net_invoice_sales
-	FROM gdb0041.sales_preinv_discount
+	FROM gdb0041.sales_preinv_discount;
 
 ### Module: Database Views: Post Invoice Discount, Net Sales
 
--- Create a view for post invoice deductions: `sales_postinv_discount`
+-- Create a view for post invoice deductions: `sales_postinv_discount`--
+
 	CREATE VIEW `sales_postinv_discount` AS
 	SELECT 
     	    s.date, s.fiscal_year,
@@ -492,13 +516,15 @@ Chapter:- SQL Advanced: Top Customers, Products, Markets
    		po.product_code = s.product_code AND
    		po.date = s.date;
 
--- Create a report for net sales
+-- Create a report for net sales--
+
 	SELECT 
             *, 
     	    net_invoice_sales*(1-post_invoice_discount_pct) as net_sales
 	FROM gdb0041.sales_postinv_discount;
 
--- Finally creating the view `net_sales` which inbuiltly use/include all the previous created view and gives the final result
+-- Finally creating the view `net_sales` which inbuiltly use/include all the previous created view and gives the final result--
+
 	CREATE VIEW `net_sales` AS
 	SELECT 
             *, 
@@ -507,7 +533,8 @@ Chapter:- SQL Advanced: Top Customers, Products, Markets
 
 ### Module: Top Markets and Customers 
 
--- Get top 5 market by net sales in fiscal year 2021
+-- Get top 5 market by net sales in fiscal year 2021--
+
 	SELECT 
     	    market, 
             round(sum(net_sales)/1000000,2) as net_sales_mln
@@ -515,9 +542,10 @@ Chapter:- SQL Advanced: Top Customers, Products, Markets
 	where fiscal_year=2021
 	group by market
 	order by net_sales_mln desc
-	limit 5
+	limit 5;
 
--- Stored proc to get top n markets by net sales for a given year
+-- Stored proc to get top n markets by net sales for a given year--
+
 	CREATE PROCEDURE `get_top_n_markets_by_net_sales`(
         	in_fiscal_year INT,
     		in_top_n INT
@@ -533,7 +561,8 @@ Chapter:- SQL Advanced: Top Customers, Products, Markets
         	limit in_top_n;
 	END
 
--- stored procedure that takes market, fiscal_year and top n as an input and returns top n customers by net sales in that given fiscal year and market
+-- stored procedure that takes market, fiscal_year and top n as an input and returns top n customers by net sales in that given fiscal year and market--
+
 	CREATE PROCEDURE `get_top_n_customers_by_net_sales`(
         	in_market VARCHAR(45),
         	in_fiscal_year INT,
@@ -556,21 +585,24 @@ Chapter:- SQL Advanced: Top Customers, Products, Markets
    
 ### Module: Window Functions: OVER Clause
 
--- show % of total expense
+-- show % of total expense--
+
 	select 
              *,
     	     amount*100/sum(amount) over() as pct
 	from random_tables.expenses 
 	order by category;
 
--- show % of total expense per category
+-- show % of total expense per category--
+
 	select 
             *,
     	    amount*100/sum(amount) over(partition by category) as pct
 	from random_tables.expenses 
 	order by category,  pct desc;
 
--- Show expenses per category till date
+-- Show expenses per category till date--
+
 	select 
              *,
              sum(amount) over(partition by category order by date) as expenses_till_date
@@ -578,7 +610,8 @@ Chapter:- SQL Advanced: Top Customers, Products, Markets
 
 ### Module: Window Functions: Using it In a Task
 
--- find out customer wise net sales percentage contribution 
+-- find out customer wise net sales percentage contribution--
+
 	with cte1 as (
 		select 
                     customer, 
@@ -592,15 +625,12 @@ Chapter:- SQL Advanced: Top Customers, Products, Markets
             *,
             net_sales_mln*100/sum(net_sales_mln) over() as pct_net_sales
 	from cte1
-	order by net_sales_mln desc
-
-
-
-
+	order by net_sales_mln desc;
 
 ### Module: Exercise: Window Functions: OVER Clause
 
--- Find customer wise net sales distibution per region for FY 2021
+-- Find customer wise net sales distibution per region for FY 2021--
+
 	with cte1 as (
 		select 
         	    c.customer,
@@ -615,14 +645,12 @@ Chapter:- SQL Advanced: Top Customers, Products, Markets
              *,
              net_sales_mln*100/sum(net_sales_mln) over (partition by region) as pct_share_region
 	from cte1
-	order by region, pct_share_region desc
-
-
-
+	order by region, pct_share_region desc;
 
 ### Module: Window Functions: ROW_NUMBER, RANK, DENSE_RANK
 
--- Show top 2 expenses in each category
+-- Show top 2 expenses in each category--
+
 	select * from 
 	     (select 
                   *, 
@@ -630,7 +658,8 @@ Chapter:- SQL Advanced: Top Customers, Products, Markets
 	      from random_tables.expenses) x
 	where x.row_num<3
 
---  If two items have same expense then row_number doesnt work. We need a true rank for which we need to use either a rank or dense_rank() function.(demo using student_marks table)
+--  If two items have same expense then row_number doesnt work. We need a true rank for which we need to use either a rank or dense_rank() function.(demo using student_marks table)--
+
 	select 
 	     *,
              row_number() over (order by marks desc) as row_num,
@@ -638,7 +667,8 @@ Chapter:- SQL Advanced: Top Customers, Products, Markets
              dense_rank() over (order by marks desc) as dense_rank_num
 	from random_tables.student_marks;
 
--- Find out top 3 products from each division by total quantity sold in a given year
+-- Find out top 3 products from each division by total quantity sold in a given year--
+
 	with cte1 as 
 		(select
                      p.division,
@@ -654,9 +684,10 @@ Chapter:- SQL Advanced: Top Customers, Products, Markets
                      *,
                      dense_rank() over (partition by division order by total_qty desc) as drnk
                 from cte1)
-	select * from cte2 where drnk<=3
+	select * from cte2 where drnk<=3;
 
--- Creating stored procedure for the above query
+-- Creating stored procedure for the above query--
+
 	CREATE PROCEDURE `get_top_n_products_per_division_by_qty_sold`(
         	in_fiscal_year INT,
     		in_top_n INT
