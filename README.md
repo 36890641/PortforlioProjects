@@ -38,7 +38,7 @@ Throughout the course of this project, I acquired valuable skills and knowledge 
 8. Implementation of Stakeholder Feedback
 9. Understanding and Analyzing Sales, Marketing, Finance, and Supply Chain Metrics.
 
-# [Project 5: Sales Analytics_Excel]()
+# [Project 5: Sales Analytics_Excel](sales_market_report_Excel Project.xlsx)
 
 In this Project, I constructed a comprehensive sales report using Excel pivot tables. This tool equips businesses to discern effective customer discounts, streamline negotiations, and pinpoint potential expansion opportunities in promising markets. The resulting reports offer actionable insights and recommendations, guiding businesses in optimizing sales strategies, elevating customer satisfaction, and maximizing revenue.
 
